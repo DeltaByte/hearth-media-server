@@ -1,0 +1,126 @@
+syntax = "proto3";
+package hearthserver.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "google/rpc/status.proto";
+
+option go_package = "github.com/deltabyte/hearth-media-server/internal/proto/library;library";
+
+service LibraryService {
+  // lists libraries.
+  rpc ListLibraries (ListLibrariesRequest) returns (ListLibrariesResponse) {
+    option (google.api.http) = {
+      get: "/libraries"
+    };
+  }
+
+  // creates a new message and returns it.
+  rpc CreateLibrary (CreateLibraryRequest) returns (Library) {
+    option (google.api.http) = {
+      post: "/libraries"
+      body: "*"
+    };
+    //option (google.api.method_signature) = "library";
+  };
+
+  // updates a library. Returns INVALID_ARGUMENT if the ID is unknown.
+  rpc UpdateLibrary (UpdateLibraryRequest) returns (UpdateLibraryResponse) {
+    option (google.api.http) = {
+      patch: "/libraries/{id}"
+      body: "*"
+    };
+  }
+
+  // deletes a library.
+  rpc DeleteLibrary (DeleteLibraryRequest) returns (DeleteLibraryResponse) {
+    option (google.api.http) = {
+      delete: "/libraries/{id}"
+    };
+  }
+}
+
+/**
+ * Library object
+ */
+enum LibraryType {
+  LIBRARY_TYPE_UNSPECIFIED = 0;
+  LIBRARY_TYPE_FILMS       = 1;
+  LIBRARY_TYPE_TV          = 2;
+  LIBRARY_TYPE_MUSIC       = 3;
+}
+
+enum CollectionVisibility {
+  COLLECTION_VISIBILITY_UNSPECIFIED = 0;
+  COLLECTION_VISIBILITY_SHOW        = 1;
+  COLLECTION_VISIBILITY_PARTIAL     = 2;
+  COLLECTION_VISIBILITY_HIDE        = 3;
+}
+
+message Library {
+  string               id                    = 1;
+  string               name                  = 2;
+  LibraryType          type                  = 3;
+  bool                 hidden                = 4;
+  string               scanner_id            = 5;
+  string               agent_id              = 6;
+  CollectionVisibility collection_visibility = 7;
+  repeated string      directories           = 8;
+
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+/**
+ * List Libraries.
+ */
+message ListLibrariesRequest {}
+message ListLibrariesResponse {
+  repeated Library libraries = 1;
+}
+
+/**
+ * Create Library
+ */
+message CreateLibraryRequest {
+  string               name                  = 1;
+  LibraryType          type                  = 2;
+  bool                 hidden                = 3;
+  string               scanner_id            = 4;
+  string               agent_id              = 5;
+  CollectionVisibility collection_visibility = 6;
+  repeated string      directories           = 7;
+}
+message CreateLibraryResponse {
+  Library           library = 1;
+  google.rpc.Status status  = 2;
+}
+
+/**
+ * Update Library
+ */
+message UpdateLibraryRequest {
+  string               id                    = 1 [(google.api.field_behavior) = REQUIRED];
+  string               name                  = 2;
+  LibraryType          type                  = 3;
+  bool                 hidden                = 4;
+  string               scanner_id            = 5;
+  string               agent_id              = 6;
+  CollectionVisibility collection_visibility = 7;
+  repeated string      directories           = 8;
+}
+message UpdateLibraryResponse {
+  Library           library = 1;
+  google.rpc.Status status  = 2;
+}
+
+/**
+ * Delete Library
+ */
+message DeleteLibraryRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+message DeleteLibraryResponse {
+  google.rpc.Status status  = 1;
+}

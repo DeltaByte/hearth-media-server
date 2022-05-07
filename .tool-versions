@@ -1,0 +1,5 @@
+nodejs lts-gallium
+golang 1.18
+yarn 1.22.18
+buf 1.4.0
+protoc 3.20.1

@@ -6,6 +6,9 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/deltabyte/hearth-media-server/backend/config"
+	"github.com/deltabyte/hearth-media-server/backend/database"
+	"github.com/deltabyte/hearth-media-server/backend/logging"
 	libraryService "github.com/deltabyte/hearth-media-server/backend/services/library"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/soheilhy/cmux"
@@ -22,25 +25,14 @@ func EchoServer(ws *websocket.Conn) {
 
 func main() {
 	// load config
-	// cfg := config.Load()
-
-	// print banner
-	// if cfg.Banner {
-	// 	printBanner()
-	// }
-
-	// initialize Sentry client
-	// sentryOpts := sentry.ClientOptions{Dsn: cfg.Sentry.DSN}
-	// if err := sentry.Init(sentryOpts); err != nil {
-	// 	log.Fatalf("Sentry initialization failed: %v\n", err)
-	// }
+	cfg := config.Load()
 
 	// init backend crap
-	// logging.Init()
-	// log := logging.Default()
-	// db := database.Init(cfg.Paths.Database)
-	// defer log.Sync()
-	// defer db.Close()
+	logging.Init()
+	log := logging.Default()
+	db := database.Init(cfg.Paths.Database)
+	defer log.Sync()
+	defer db.Close()
 
 	// setup TCP mux
 	listener, err := net.Listen("tcp", ":9000")
@@ -66,7 +58,7 @@ func main() {
 
 	// register services
 	reflection.Register(grpcServer)
-	libraryService.Register(grpcServer, gwMux)
+	libraryService.New(cfg, log, db).Register(grpcServer, gwMux)
 
 	// start servers
 	go grpcServer.Serve(grpcListener)

@@ -7,15 +7,17 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func TouchTimestamp(pbTS *timestamppb.Timestamp, now time.Time, nilOnly bool) {
-	ts := pbTS.AsTime()
+func TouchTimestamp(pbTS *timestamppb.Timestamp, now time.Time, nilOnly bool) *timestamppb.Timestamp {
+	ts := time.Time{}
+	if pbTS != nil {
+		ts = pbTS.AsTime()
+	}
 
 	if ts.IsZero() || !nilOnly {
 		ts = now
 	}
 
-	pbTS.Seconds = ts.Unix()
-	pbTS.Nanos = int32(ts.Nanosecond())
+	return timestamppb.New(ts)
 }
 
 func ParseKSUIDBytes(id string) ([]byte, error) {

@@ -13,10 +13,10 @@ func GetAll(db *bolt.DB) ([]*pb.Library, error) {
 	var libraries []*pb.Library
 
 	err := db.View(func(tx *bolt.Tx) error {
-		dbb := tx.Bucket(database.Buckets.Libraries)
+		bkt := tx.Bucket(database.Buckets.Libraries)
 
 		// iterate over all libraries, decode, and add to result
-		dbb.ForEach(func(k, v []byte) error {
+		bkt.ForEach(func(k, v []byte) error {
 			decoded, err := Decode(v)
 			if err != nil {
 				return err
@@ -35,10 +35,10 @@ func Find(db *bolt.DB, id ksuid.KSUID) (*pb.Library, error) {
 	var channel *pb.Library
 
 	err := db.View(func(tx *bolt.Tx) error {
-		dbb := tx.Bucket(database.Buckets.Libraries)
+		bkt := tx.Bucket(database.Buckets.Libraries)
 
 		// get by ID
-		res := dbb.Get(id.Bytes())
+		res := bkt.Get(id.Bytes())
 		if res == nil {
 			channel = nil
 			return nil

@@ -31,8 +31,8 @@ func New(chanType pb.LibraryType) *pb.Library {
 func Save(db *bolt.DB, lib *pb.Library) error {
 	// update timestamps
 	now := time.Now()
-	helpers.TouchTimestamp(lib.CreatedAt, now, true)
-	helpers.TouchTimestamp(lib.UpdatedAt, now, false)
+	lib.CreatedAt = helpers.TouchTimestamp(lib.CreatedAt, now, true)
+	lib.UpdatedAt = helpers.TouchTimestamp(lib.UpdatedAt, now, false)
 
 	// encode to binary
 	enc, err := proto.Marshal(lib)

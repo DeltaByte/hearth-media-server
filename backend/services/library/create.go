@@ -10,14 +10,14 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type createChannelValidator struct {
+type createLibraryValidator struct {
 	Type pb.LibraryType `validate:"ne=0,required"`
 	Name string         `validate:"max=100,required"`
 }
 
-func (svc *LibraryService) CreateChannel(ctx context.Context, req *pb.CreateLibraryRequest) (*pb.CreateLibraryResponse, error) {
+func (svc *LibraryService) CreateLibrary(ctx context.Context, req *pb.CreateLibraryRequest) (*pb.CreateLibraryResponse, error) {
 	// validate request
-	if err := helpers.ValidateRequest(&createChannelValidator{}, req); err != nil {
+	if err := helpers.ValidateRequest(&createLibraryValidator{}, req); err != nil {
 		return &pb.CreateLibraryResponse{
 			Status: helpers.StatusValidationFailed(err),
 		}, nil

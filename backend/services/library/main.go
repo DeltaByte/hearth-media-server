@@ -19,8 +19,7 @@ type LibraryService struct {
 }
 
 func (svc *LibraryService) Register(grpcServer *grpc.Server, gwMux *runtime.ServeMux) {
-	service := &LibraryService{}
-	pb.RegisterLibraryServiceServer(grpcServer, service)
+	pb.RegisterLibraryServiceServer(grpcServer, svc)
 	pb.RegisterLibraryServiceHandlerFromEndpoint(context.Background(), gwMux, "127.0.0.1:9000", []grpc.DialOption{grpc.WithInsecure()})
 }
 

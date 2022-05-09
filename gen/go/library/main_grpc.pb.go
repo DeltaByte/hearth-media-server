@@ -25,7 +25,7 @@ type LibraryServiceClient interface {
 	// lists libraries.
 	ListLibraries(ctx context.Context, in *ListLibrariesRequest, opts ...grpc.CallOption) (*ListLibrariesResponse, error)
 	// creates a new message and returns it.
-	CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*Library, error)
+	CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*CreateLibraryResponse, error)
 	// updates a library. Returns INVALID_ARGUMENT if the ID is unknown.
 	UpdateLibrary(ctx context.Context, in *UpdateLibraryRequest, opts ...grpc.CallOption) (*UpdateLibraryResponse, error)
 	// deletes a library.
@@ -49,8 +49,8 @@ func (c *libraryServiceClient) ListLibraries(ctx context.Context, in *ListLibrar
 	return out, nil
 }
 
-func (c *libraryServiceClient) CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*Library, error) {
-	out := new(Library)
+func (c *libraryServiceClient) CreateLibrary(ctx context.Context, in *CreateLibraryRequest, opts ...grpc.CallOption) (*CreateLibraryResponse, error) {
+	out := new(CreateLibraryResponse)
 	err := c.cc.Invoke(ctx, "/hearthserver.v1.LibraryService/CreateLibrary", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ type LibraryServiceServer interface {
 	// lists libraries.
 	ListLibraries(context.Context, *ListLibrariesRequest) (*ListLibrariesResponse, error)
 	// creates a new message and returns it.
-	CreateLibrary(context.Context, *CreateLibraryRequest) (*Library, error)
+	CreateLibrary(context.Context, *CreateLibraryRequest) (*CreateLibraryResponse, error)
 	// updates a library. Returns INVALID_ARGUMENT if the ID is unknown.
 	UpdateLibrary(context.Context, *UpdateLibraryRequest) (*UpdateLibraryResponse, error)
 	// deletes a library.
@@ -98,7 +98,7 @@ type UnimplementedLibraryServiceServer struct {
 func (UnimplementedLibraryServiceServer) ListLibraries(context.Context, *ListLibrariesRequest) (*ListLibrariesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListLibraries not implemented")
 }
-func (UnimplementedLibraryServiceServer) CreateLibrary(context.Context, *CreateLibraryRequest) (*Library, error) {
+func (UnimplementedLibraryServiceServer) CreateLibrary(context.Context, *CreateLibraryRequest) (*CreateLibraryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateLibrary not implemented")
 }
 func (UnimplementedLibraryServiceServer) UpdateLibrary(context.Context, *UpdateLibraryRequest) (*UpdateLibraryResponse, error) {

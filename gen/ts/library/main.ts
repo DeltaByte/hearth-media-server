@@ -1001,7 +1001,7 @@ export interface LibraryService {
   CreateLibrary(
     request: DeepPartial<CreateLibraryRequest>,
     metadata?: grpc.Metadata
-  ): Promise<Library>;
+  ): Promise<CreateLibraryResponse>;
   /** updates a library. Returns INVALID_ARGUMENT if the ID is unknown. */
   UpdateLibrary(
     request: DeepPartial<UpdateLibraryRequest>,
@@ -1039,7 +1039,7 @@ export class LibraryServiceClientImpl implements LibraryService {
   CreateLibrary(
     request: DeepPartial<CreateLibraryRequest>,
     metadata?: grpc.Metadata
-  ): Promise<Library> {
+  ): Promise<CreateLibraryResponse> {
     return this.rpc.unary(
       LibraryServiceCreateLibraryDesc,
       CreateLibraryRequest.fromPartial(request),
@@ -1109,7 +1109,7 @@ export const LibraryServiceCreateLibraryDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...Library.decode(data),
+        ...CreateLibraryResponse.decode(data),
         toObject() {
           return this;
         },
